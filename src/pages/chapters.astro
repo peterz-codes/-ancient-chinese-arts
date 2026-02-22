@@ -1,0 +1,134 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { chapters, categories } from '../data/chapters';
+---
+
+<BaseLayout
+  title="篇目一览"
+  description="古代房中术全书四十篇章完整目录"
+>
+  <!-- Page header -->
+  <div class="border-b border-border bg-paper-dark">
+    <div class="max-w-6xl mx-auto px-6 py-12">
+      <div class="text-gold text-xs tracking-[0.3em] mb-2">全书目录</div>
+      <h1 class="text-3xl font-semibold text-ink tracking-wider mb-4">篇目一览</h1>
+      <p class="text-sepia text-sm max-w-2xl leading-relaxed">
+        全书共四十篇，按主题分为总论、哲学基础、养生要旨、气功修炼、
+        医学理论、古典规范、九法体位及古典文献等类别，
+        系统呈现中国古代房室养生文化的完整体系。
+      </p>
+    </div>
+  </div>
+
+  <div class="max-w-6xl mx-auto px-6 py-12">
+
+    <!-- Category filter -->
+    <div class="flex flex-wrap gap-2 mb-10" id="filter-bar">
+      <button
+        data-category="全部"
+        class="filter-btn active px-4 py-1.5 text-xs tracking-wider border border-vermil bg-vermil text-paper transition-all"
+      >
+        全部
+      </button>
+      {categories.map(cat => (
+        <button
+          data-category={cat}
+          class="filter-btn px-4 py-1.5 text-xs tracking-wider border border-border text-sepia hover:border-vermil hover:text-vermil transition-all"
+        >
+          {cat}
+        </button>
+      ))}
+    </div>
+
+    <!-- Chapters grid -->
+    <div class="grid md:grid-cols-2 gap-4" id="chapters-grid">
+      {chapters.map(chapter => (
+        <div
+          class="chapter-card p-5 flex gap-4"
+          data-category={chapter.category}
+        >
+          <!-- Chapter number -->
+          <div class="shrink-0 text-center">
+            <div class="w-10 h-10 border border-gold flex items-center justify-center">
+              <span class="text-gold text-sm font-semibold">{chapter.id}</span>
+            </div>
+            <div class="text-sepia/40 text-xs mt-1 tracking-wider">第{chapter.page}页</div>
+          </div>
+
+          <!-- Content -->
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 mb-1.5">
+              <span class="text-xs text-sepia/60 bg-paper px-2 py-0.5 border border-border tracking-wider shrink-0">
+                {chapter.category}
+              </span>
+            </div>
+            <h3 class="font-semibold text-ink tracking-wider text-sm mb-1.5 leading-snug">
+              {chapter.title}
+            </h3>
+            <p class="text-sepia text-xs leading-relaxed line-clamp-2">
+              {chapter.summary}
+            </p>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <!-- Table of contents (traditional style) -->
+    <div class="mt-16 pt-12 border-t border-border">
+      <div class="divider mb-10">
+        <span class="text-gold text-xs tracking-widest px-4">传统目录</span>
+      </div>
+
+      <div class="max-w-2xl mx-auto">
+        <div class="text-center mb-8">
+          <h2 class="font-display text-2xl text-vermil tracking-[0.3em]">目　　錄</h2>
+          <div class="w-24 h-px bg-border mx-auto mt-3"></div>
+        </div>
+
+        <ol class="space-y-2">
+          {chapters.map(chapter => (
+            <li class="flex items-baseline gap-2 text-sm group">
+              <span class="text-sepia/60 w-8 text-right shrink-0 text-xs tabular-nums">
+                {chapter.id}
+              </span>
+              <span class="flex-1 border-b border-dotted border-border group-hover:border-gold transition-colors text-ink tracking-wider pb-0.5">
+                {chapter.title}
+              </span>
+              <span class="text-sepia/60 text-xs tabular-nums shrink-0">
+                {chapter.page}
+              </span>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
+  const cards   = document.querySelectorAll<HTMLElement>('.chapter-card[data-category]');
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const cat = btn.dataset.category || '全部';
+
+      // Update button styles
+      buttons.forEach(b => {
+        b.classList.remove('active', 'bg-vermil', 'text-paper', 'border-vermil');
+        b.classList.add('border-border', 'text-sepia');
+      });
+      btn.classList.add('active', 'bg-vermil', 'text-paper', 'border-vermil');
+      btn.classList.remove('border-border', 'text-sepia');
+
+      // Filter cards
+      cards.forEach(card => {
+        if (cat === '全部' || card.dataset.category === cat) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  });
+</script>

@@ -1,0 +1,173 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { chapters } from '../data/chapters';
+---
+
+<BaseLayout
+  title="关于本书"
+  description="《古代房中术》简介与版本信息"
+>
+  <!-- Page header -->
+  <div class="border-b border-border bg-paper-dark">
+    <div class="max-w-6xl mx-auto px-6 py-12">
+      <div class="text-gold text-xs tracking-[0.3em] mb-2">文献信息</div>
+      <h1 class="text-3xl font-semibold text-ink tracking-wider mb-4">关于本书</h1>
+      <p class="text-sepia text-sm max-w-2xl leading-relaxed">
+        《古代房中术》是一部系统整理中国古代道家房室养生文化的学术文献，
+        现以数字化形式呈现，供文化研究者参考。
+      </p>
+    </div>
+  </div>
+
+  <div class="max-w-4xl mx-auto px-6 py-12">
+
+    <div class="grid md:grid-cols-3 gap-10">
+
+      <!-- Book info sidebar -->
+      <aside class="md:col-span-1">
+        <!-- Book cover placeholder -->
+        <div class="img-placeholder w-full aspect-[3/4] mb-6">
+          <div class="text-center text-sepia/60 px-4">
+            <div class="font-display text-vermil text-4xl mb-2">古</div>
+            <div class="text-xs tracking-widest leading-loose">
+              代<br/>房<br/>中<br/>術
+            </div>
+            <div class="mt-4 text-xs text-sepia/40 tracking-wider">封面图像占位</div>
+          </div>
+        </div>
+
+        <!-- Metadata table -->
+        <div class="border border-border divide-y divide-border text-sm">
+          {[
+            { label: '书名', value: '古代房中术' },
+            { label: '作者', value: '不详（古代文献汇编）' },
+            { label: '类别', value: '道家养生 / 文化史料' },
+            { label: '篇数', value: '四十篇' },
+            { label: '总页数', value: '一百一十页' },
+            { label: '数字版年份', value: '2022年' },
+            { label: '制作工具', value: 'Calibre 6.10.0' },
+          ].map(item => (
+            <div class="flex">
+              <div class="w-28 px-3 py-2 bg-paper-dark text-sepia/70 text-xs tracking-wider shrink-0">{item.label}</div>
+              <div class="px-3 py-2 text-ink text-xs tracking-wider">{item.value}</div>
+            </div>
+          ))}
+        </div>
+      </aside>
+
+      <!-- Main content -->
+      <div class="md:col-span-2 space-y-10">
+
+        <section>
+          <h2 class="text-lg font-semibold text-ink tracking-wider mb-4 flex items-center gap-3">
+            <span class="w-1 h-5 bg-vermil inline-block"></span>
+            内容简介
+          </h2>
+          <div class="space-y-4 text-sepia text-sm leading-relaxed">
+            <p>
+              《古代房中术》是一部以道家传统为基础，系统汇集中国古代房室养生理论与方法的文献选集。
+              全书共四十篇，内容涵盖阴阳五行哲学基础、气功修炼实践、传统医学理论，
+              以及《洞玄子》等历史文献的整理与诠释。
+            </p>
+            <p>
+              本书的学术价值在于，它系统梳理了从先秦至唐代的房中养生文化，
+              将散见于各类道藏、医籍中的相关论述加以整合，
+              为读者提供了一个认识中国传统性科学的完整视窗。
+            </p>
+            <p>
+              全书以"养生"而非"禁忌"为基本立场，
+              将房室活动纳入中医"天人合一"、顺应自然节律的整体养生框架之中，
+              体现了古代医家对生命科学的理性态度与人文关怀。
+            </p>
+          </div>
+        </section>
+
+        <section>
+          <h2 class="text-lg font-semibold text-ink tracking-wider mb-4 flex items-center gap-3">
+            <span class="w-1 h-5 bg-gold inline-block"></span>
+            主要内容分类
+          </h2>
+          <div class="grid grid-cols-2 gap-3">
+            {[
+              { cat: '总论',    count: 3, desc: '房中术的定义、历史与总体介绍' },
+              { cat: '哲学基础', count: 1, desc: '阴阳五行等道家核心理论' },
+              { cat: '养生要旨', count: 7, desc: '核心养生原则与方法' },
+              { cat: '气功修炼', count: 5, desc: '内丹与气功修炼实践' },
+              { cat: '医学理论', count: 10, desc: '中医视角下的生理与健康' },
+              { cat: '古典规范', count: 5, desc: '历代典籍中的规范与礼仪' },
+              { cat: '九法体位', count: 9, desc: '以动物命名的九种修炼法' },
+              { cat: '古典文献', count: 1, desc: '洞玄子等经典文献研究' },
+            ].map(item => (
+              <div class="border border-border p-3 bg-paper">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-sm font-semibold text-ink tracking-wider">{item.cat}</span>
+                  <span class="text-xs text-sepia bg-paper-dark border border-border px-2 py-0.5">{item.count}篇</span>
+                </div>
+                <p class="text-xs text-sepia/80 leading-relaxed">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section>
+          <h2 class="text-lg font-semibold text-ink tracking-wider mb-4 flex items-center gap-3">
+            <span class="w-1 h-5 bg-sepia inline-block"></span>
+            使用说明
+          </h2>
+          <div class="border border-border p-5 bg-paper space-y-3 text-sm text-sepia leading-relaxed">
+            <p>
+              本站以学术研究与文化教育为目的，以中立、客观的立场呈现中国古代文化遗产。
+              内容涉及中国传统医学与道家文化中的性健康议题，
+              适合成年文史研究者、中医学习者与文化爱好者参考。
+            </p>
+            <p>
+              本站所呈现内容均为历史文献的学术性整理，
+              不构成任何医疗、心理或健康建议。
+              读者在参考本站信息时，请结合现代医学知识加以甄别。
+            </p>
+            <p class="text-sepia/70 text-xs">
+              ❖ 本站内容仅供学术参考，不适合十八岁以下人群阅览。
+            </p>
+          </div>
+        </section>
+
+        <section>
+          <h2 class="text-lg font-semibold text-ink tracking-wider mb-4 flex items-center gap-3">
+            <span class="w-1 h-5 bg-vermil/50 inline-block"></span>
+            延伸阅读
+          </h2>
+          <ul class="space-y-2 text-sm text-sepia">
+            {[
+              'van Gulik, Robert Hans. Sexual Life in Ancient China. Leiden: Brill, 1961.',
+              '李零：《中国方术续考》，北京：东方出版社，2000年。',
+              '马继兴：《马王堆古医书考释》，长沙：湖南科学技术出版社，1992年。',
+              '丹波康赖（日）：《医心方》（九八二年），各版本。',
+              'Wile, Douglas. Art of the Bedchamber. Albany: SUNY Press, 1992.',
+            ].map(ref => (
+              <li class="flex gap-2 leading-relaxed">
+                <span class="text-gold shrink-0 mt-0.5">❖</span>
+                <span class="text-xs">{ref}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="mt-16 pt-8 border-t border-border flex flex-col sm:flex-row gap-4 justify-between">
+      <a href="/context"
+        class="flex items-center gap-2 text-sm text-sepia hover:text-vermil transition-colors tracking-wider group">
+        <span class="group-hover:-translate-x-1 transition-transform">←</span>
+        历史背景
+      </a>
+      <a href="/chapters"
+        class="flex items-center gap-2 text-sm text-sepia hover:text-vermil transition-colors tracking-wider group">
+        浏览全部篇目
+        <span class="group-hover:translate-x-1 transition-transform">→</span>
+      </a>
+    </div>
+
+  </div>
+</BaseLayout>

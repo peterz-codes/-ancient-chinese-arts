@@ -43,8 +43,9 @@ import { chapters, categories } from '../data/chapters';
     <!-- Chapters grid -->
     <div class="grid md:grid-cols-2 gap-4" id="chapters-grid">
       {chapters.map(chapter => (
-        <div
-          class="chapter-card p-5 flex gap-4"
+        <a
+          href={`/chapters/${chapter.id}`}
+          class="chapter-card p-5 flex gap-4 block"
           data-category={chapter.category}
         >
           <!-- Chapter number -->
@@ -62,14 +63,14 @@ import { chapters, categories } from '../data/chapters';
                 {chapter.category}
               </span>
             </div>
-            <h3 class="font-semibold text-ink tracking-wider text-sm mb-1.5 leading-snug">
+            <h3 class="font-semibold text-ink tracking-wider text-sm mb-1.5 leading-snug group-hover:text-vermil transition-colors">
               {chapter.title}
             </h3>
             <p class="text-sepia text-xs leading-relaxed line-clamp-2">
               {chapter.summary}
             </p>
           </div>
-        </div>
+        </a>
       ))}
     </div>
 
@@ -91,9 +92,9 @@ import { chapters, categories } from '../data/chapters';
               <span class="text-sepia/60 w-8 text-right shrink-0 text-xs tabular-nums">
                 {chapter.id}
               </span>
-              <span class="flex-1 border-b border-dotted border-border group-hover:border-gold transition-colors text-ink tracking-wider pb-0.5">
+              <a href={`/chapters/${chapter.id}`} class="flex-1 border-b border-dotted border-border group-hover:border-gold group-hover:text-vermil transition-colors text-ink tracking-wider pb-0.5">
                 {chapter.title}
-              </span>
+              </a>
               <span class="text-sepia/60 text-xs tabular-nums shrink-0">
                 {chapter.page}
               </span>

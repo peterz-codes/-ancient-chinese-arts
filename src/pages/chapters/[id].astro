@@ -1,0 +1,145 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { chapters } from '../../data/chapters';
+import contentData from '../../data/chapters_content.json';
+
+export function getStaticPaths() {
+  return chapters.map(ch => ({
+    params: { id: String(ch.id) },
+  }));
+}
+
+const { id } = Astro.params;
+const chapterId = Number(id);
+const chapter = chapters.find(c => c.id === chapterId)!;
+const prev = chapters.find(c => c.id === chapterId - 1);
+const next = chapters.find(c => c.id === chapterId + 1);
+
+// Get raw text content, strip the first line (chapter title already shown)
+const rawText: string = (contentData as Record<string, string>)[id] ?? '';
+const lines = rawText.split('\n').map(l => l.trim()).filter(Boolean);
+// Remove the first line if it matches the chapter title
+const contentLines = lines[0] && chapter.title.includes(lines[0].substring(0, 4))
+  ? lines.slice(1)
+  : lines;
+
+// Group lines into paragraphs (blank line = paragraph break)
+const paragraphs: string[] = [];
+let current = '';
+for (const line of contentLines) {
+  current += (current ? '　' : '') + line;
+  // Heuristic: start new paragraph after sentences ending with 。！？
+  if (/[。！？」』]$/.test(line) && current.length > 60) {
+    paragraphs.push(current);
+    current = '';
+  }
+}
+if (current) paragraphs.push(current);
+---
+
+<BaseLayout
+  title={`第${chapterId}篇 ${chapter.title}`}
+  description={chapter.summary}
+>
+  <!-- Breadcrumb -->
+  <div class="border-b border-border bg-paper-dark">
+    <div class="max-w-4xl mx-auto px-6 py-3">
+      <nav class="flex items-center gap-2 text-xs text-sepia tracking-wider">
+        <a href="/" class="hover:text-vermil transition-colors">首页</a>
+        <span class="text-border">›</span>
+        <a href="/chapters" class="hover:text-vermil transition-colors">篇目</a>
+        <span class="text-border">›</span>
+        <span class="text-ink">{chapter.title}</span>
+      </nav>
+    </div>
+  </div>
+
+  <article class="max-w-4xl mx-auto px-6 py-12">
+
+    <!-- Chapter header -->
+    <header class="mb-12 pb-8 border-b border-border">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-10 h-10 border border-gold flex items-center justify-center shrink-0">
+          <span class="text-gold text-sm font-semibold">{chapterId}</span>
+        </div>
+        <span class="text-xs text-sepia bg-paper-dark border border-border px-3 py-1 tracking-wider">
+          {chapter.category}
+        </span>
+        <span class="text-xs text-sepia/60 tracking-wider">第 {chapter.page} 页</span>
+      </div>
+
+      <h1 class="text-3xl font-semibold text-ink tracking-wider mb-4 leading-snug">
+        {chapter.title}
+      </h1>
+
+      <!-- Summary / academic framing -->
+      <div class="border-l-2 border-gold pl-4 py-2 bg-paper-dark/50">
+        <p class="text-sepia text-sm leading-relaxed italic">
+          {chapter.summary}
+        </p>
+      </div>
+    </header>
+
+    <!-- Chapter content -->
+    {paragraphs.length > 0 ? (
+      <div class="prose-chapter space-y-5">
+        {paragraphs.map((para, i) => (
+          <p class="text-ink/90 leading-8 text-[0.95rem] tracking-wide first-letter:text-vermil first-letter:text-2xl first-letter:font-semibold first-letter:float-left first-letter:mr-1 first-letter:leading-none"
+             style={i > 0 ? "text-indent: 2em;" : undefined}
+          >
+            {para}
+          </p>
+        ))}
+      </div>
+    ) : (
+      <div class="text-center py-16 text-sepia/60">
+        <div class="text-4xl mb-4">❖</div>
+        <p class="text-sm tracking-wider">本篇内容整理中</p>
+      </div>
+    )}
+
+    <!-- Chapter navigation -->
+    <nav class="mt-16 pt-8 border-t border-border grid grid-cols-2 gap-4">
+      {prev ? (
+        <a href={`/chapters/${prev.id}`}
+          class="group flex flex-col gap-1 p-4 border border-border hover:border-gold transition-colors">
+          <span class="text-xs text-sepia/60 tracking-wider flex items-center gap-1">
+            <span class="group-hover:-translate-x-1 transition-transform inline-block">←</span>
+            上一篇
+          </span>
+          <span class="text-sm text-ink tracking-wider line-clamp-1 group-hover:text-vermil transition-colors">
+            {prev.title}
+          </span>
+        </a>
+      ) : <div />}
+
+      {next ? (
+        <a href={`/chapters/${next.id}`}
+          class="group flex flex-col gap-1 p-4 border border-border hover:border-gold transition-colors text-right">
+          <span class="text-xs text-sepia/60 tracking-wider flex items-center justify-end gap-1">
+            下一篇
+            <span class="group-hover:translate-x-1 transition-transform inline-block">→</span>
+          </span>
+          <span class="text-sm text-ink tracking-wider line-clamp-1 group-hover:text-vermil transition-colors">
+            {next.title}
+          </span>
+        </a>
+      ) : <div />}
+    </nav>
+
+    <!-- Back to index -->
+    <div class="mt-6 text-center">
+      <a href="/chapters"
+        class="text-xs text-sepia hover:text-vermil transition-colors tracking-widest border-b border-transparent hover:border-vermil pb-0.5">
+        返回篇目一览
+      </a>
+    </div>
+
+  </article>
+</BaseLayout>
+
+<style>
+  .prose-chapter p {
+    hyphens: auto;
+  }
+</style>

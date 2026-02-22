@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { chapters } from '../../data/chapters';
+import { chapterVideos } from '../../data/chapter_videos';
 import contentData from '../../data/chapters_content.json';
 
 export function getStaticPaths() {
@@ -14,21 +15,20 @@ const chapterId = Number(id);
 const chapter = chapters.find(c => c.id === chapterId)!;
 const prev = chapters.find(c => c.id === chapterId - 1);
 const next = chapters.find(c => c.id === chapterId + 1);
+const bvid = chapterVideos[chapterId] ?? null;
 
-// Get raw text content, strip the first line (chapter title already shown)
+// Get raw text content
 const rawText: string = (contentData as Record<string, string>)[id] ?? '';
 const lines = rawText.split('\n').map(l => l.trim()).filter(Boolean);
-// Remove the first line if it matches the chapter title
 const contentLines = lines[0] && chapter.title.includes(lines[0].substring(0, 4))
   ? lines.slice(1)
   : lines;
 
-// Group lines into paragraphs (blank line = paragraph break)
+// Group into paragraphs
 const paragraphs: string[] = [];
 let current = '';
 for (const line of contentLines) {
   current += (current ? '　' : '') + line;
-  // Heuristic: start new paragraph after sentences ending with 。！？
   if (/[。！？」』]$/.test(line) && current.length > 60) {
     paragraphs.push(current);
     current = '';
@@ -57,7 +57,7 @@ if (current) paragraphs.push(current);
   <article class="max-w-4xl mx-auto px-6 py-12">
 
     <!-- Chapter header -->
-    <header class="mb-12 pb-8 border-b border-border">
+    <header class="mb-10 pb-8 border-b border-border">
       <div class="flex items-center gap-3 mb-4">
         <div class="w-10 h-10 border border-gold flex items-center justify-center shrink-0">
           <span class="text-gold text-sm font-semibold">{chapterId}</span>
@@ -67,26 +67,57 @@ if (current) paragraphs.push(current);
         </span>
         <span class="text-xs text-sepia/60 tracking-wider">第 {chapter.page} 页</span>
       </div>
-
       <h1 class="text-3xl font-semibold text-ink tracking-wider mb-4 leading-snug">
         {chapter.title}
       </h1>
-
-      <!-- Summary / academic framing -->
       <div class="border-l-2 border-gold pl-4 py-2 bg-paper-dark/50">
-        <p class="text-sepia text-sm leading-relaxed italic">
-          {chapter.summary}
-        </p>
+        <p class="text-sepia text-sm leading-relaxed italic">{chapter.summary}</p>
       </div>
     </header>
 
+    <!-- Video Section -->
+    <section class="mb-12">
+      <div class="flex items-center gap-2 mb-3">
+        <div class="w-1 h-4 bg-vermil"></div>
+        <span class="text-sm text-ink font-semibold tracking-wider">数字人讲解</span>
+      </div>
+
+      {bvid ? (
+        <div class="border border-border bg-ink" style="position:relative; padding-top:56.25%;">
+          <iframe
+            src={`https://player.bilibili.com/player.html?bvid=${bvid}&page=1&high_quality=1&danmaku=0&autoplay=0`}
+            scrolling="no"
+            frameborder="0"
+            allowfullscreen
+            style="position:absolute; top:0; left:0; width:100%; height:100%;"
+          ></iframe>
+        </div>
+      ) : (
+        <div class="border border-dashed border-border bg-paper-dark/40"
+             style="position:relative; padding-top:56.25%;">
+          <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px;">
+            <div class="w-14 h-14 border border-sepia/30 rounded-full flex items-center justify-center">
+              <svg class="w-5 h-5 text-sepia/40 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+            </div>
+            <p class="text-sepia/40 text-xs tracking-widest">视频制作中，敬请期待</p>
+          </div>
+        </div>
+      )}
+    </section>
+
+    <!-- Divider -->
+    <div class="divider mb-10">
+      <span class="text-gold text-xs tracking-widest px-4">原文</span>
+    </div>
+
     <!-- Chapter content -->
     {paragraphs.length > 0 ? (
-      <div class="prose-chapter space-y-5">
+      <div class="space-y-5">
         {paragraphs.map((para, i) => (
-          <p class="text-ink/90 leading-8 text-[0.95rem] tracking-wide first-letter:text-vermil first-letter:text-2xl first-letter:font-semibold first-letter:float-left first-letter:mr-1 first-letter:leading-none"
-             style={i > 0 ? "text-indent: 2em;" : undefined}
-          >
+          <p class="text-ink/90 leading-8 text-[0.95rem] tracking-wide"
+             style={i === 0 ? '' : 'text-indent:2em'}>
             {para}
           </p>
         ))}
@@ -98,7 +129,7 @@ if (current) paragraphs.push(current);
       </div>
     )}
 
-    <!-- Chapter navigation -->
+    <!-- Navigation -->
     <nav class="mt-16 pt-8 border-t border-border grid grid-cols-2 gap-4">
       {prev ? (
         <a href={`/chapters/${prev.id}`}
@@ -127,7 +158,6 @@ if (current) paragraphs.push(current);
       ) : <div />}
     </nav>
 
-    <!-- Back to index -->
     <div class="mt-6 text-center">
       <a href="/chapters"
         class="text-xs text-sepia hover:text-vermil transition-colors tracking-widest border-b border-transparent hover:border-vermil pb-0.5">
@@ -139,7 +169,5 @@ if (current) paragraphs.push(current);
 </BaseLayout>
 
 <style>
-  .prose-chapter p {
-    hyphens: auto;
-  }
+  iframe { display: block; }
 </style>

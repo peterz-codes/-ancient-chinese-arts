@@ -17,6 +17,18 @@ const prev = chapters.find(c => c.id === chapterId - 1);
 const next = chapters.find(c => c.id === chapterId + 1);
 const bvid = chapterVideos[chapterId] ?? null;
 
+const keywords = `${chapter.title},${chapter.category},房中术,道家养生,古代养生,中医养生,道家文化`;
+const articleJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: chapter.title,
+  description: chapter.summary,
+  inLanguage: 'zh-CN',
+  url: `https://www.zendao.tech/chapters/${chapterId}`,
+  isPartOf: { '@type': 'Book', name: '古代房中术', url: 'https://www.zendao.tech' },
+  position: chapterId,
+};
+
 // Get raw text content
 const rawText: string = (contentData as Record<string, string>)[id] ?? '';
 const lines = rawText.split('\n').map(l => l.trim()).filter(Boolean);
@@ -40,7 +52,9 @@ if (current) paragraphs.push(current);
 <BaseLayout
   title={`第${chapterId}篇 ${chapter.title}`}
   description={chapter.summary}
+  keywords={keywords}
 >
+  <script type="application/ld+json" set:html={JSON.stringify(articleJsonLd)} slot="head" />
   <!-- Breadcrumb -->
   <div class="border-b border-border bg-paper-dark">
     <div class="max-w-4xl mx-auto px-6 py-3">

@@ -21,3 +21,11 @@ pnpm-debug.log*
 
 # Astro
 .astro/
+
+# Claude internal
+.claude/
+
+# Project source files not needed in repo
+ParsedDocument346081079.pdf
+extracted_text.txt
+bilibili.txt

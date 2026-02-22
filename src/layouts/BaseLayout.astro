@@ -1,12 +1,24 @@
 ---
 import '../styles/global.css';
+
 export interface Props {
   title: string;
   description?: string;
+  ogImage?: string;
+  keywords?: string;
 }
 
-const { title, description = '古代房中术——道家养生经典文献研究' } = Astro.props;
+const {
+  title,
+  description = '古代房中术——道家养生经典文献研究，系统整理中国古代房室养生文化，涵盖阴阳五行、气功修炼、中医理论等四十篇学术内容。',
+  ogImage = '/cover.jpg',
+  keywords = '房中术,道家养生,古代养生,中医养生,阴阳五行,气功修炼,道家文化,中国传统文化',
+} = Astro.props;
+
 const currentPath = Astro.url.pathname;
+const canonicalURL = new URL(currentPath, 'https://www.zendao.tech').href;
+const fullTitle = title === '首页' ? '古代房中术——道家养生经典文献' : `${title} — 古代房中术`;
+const ogImageURL = new URL(ogImage, 'https://www.zendao.tech').href;
 
 const navLinks = [
   { href: '/',          label: '首页' },
@@ -14,6 +26,15 @@ const navLinks = [
   { href: '/context',   label: '历史背景' },
   { href: '/about',     label: '关于本书' },
 ];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: '古代房中术',
+  url: 'https://www.zendao.tech',
+  description,
+  inLanguage: 'zh-CN',
+};
 ---
 
 <!DOCTYPE html>
@@ -21,14 +42,54 @@ const navLinks = [
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Primary SEO -->
+  <title>{fullTitle}</title>
   <meta name="description" content={description} />
-  <title>{title} — 古代房中术</title>
+  <meta name="keywords" content={keywords} />
+  <meta name="author" content="道家文化研究" />
+  <link rel="canonical" href={canonicalURL} />
+
+  <!-- Open Graph (微信/微博/Facebook 分享预览) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content={canonicalURL} />
+  <meta property="og:title" content={fullTitle} />
+  <meta property="og:description" content={description} />
+  <meta property="og:image" content={ogImageURL} />
+  <meta property="og:image:width" content="600" />
+  <meta property="og:image:height" content="800" />
+  <meta property="og:locale" content="zh_CN" />
+  <meta property="og:site_name" content="古代房中术" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={fullTitle} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={ogImageURL} />
+
+  <!-- Baidu SEO -->
+  <meta name="baidu-site-verification" content="" />
+  <meta name="applicable-device" content="pc,mobile" />
+  <meta name="mobile-agent" content="format=html5; url=https://www.zendao.tech" />
+
+  <!-- Robots -->
+  <meta name="robots" content="index, follow" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
     href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;600;700&family=Ma+Shan+Zheng&display=swap"
     rel="stylesheet"
   />
+
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  <!-- Per-page head slot -->
+  <slot name="head" />
 </head>
 <body class="min-h-screen bg-paper font-serif text-ink">
 
@@ -39,7 +100,6 @@ const navLinks = [
   <header class="border-b border-border bg-paper/95 backdrop-blur-sm sticky top-0 z-50">
     <div class="max-w-6xl mx-auto px-6 py-4">
       <div class="flex items-center justify-between">
-        <!-- Logo / Site title -->
         <a href="/" class="flex items-center gap-3 group">
           <div class="w-10 h-10 border-2 border-vermil flex items-center justify-center text-vermil text-lg font-display group-hover:bg-vermil group-hover:text-paper transition-colors duration-300">
             古
@@ -50,7 +110,6 @@ const navLinks = [
           </div>
         </a>
 
-        <!-- Navigation -->
         <nav class="hidden md:flex items-center gap-8">
           {navLinks.map(link => (
             <a
@@ -66,7 +125,6 @@ const navLinks = [
           ))}
         </nav>
 
-        <!-- Mobile menu button -->
         <button id="menu-btn" class="md:hidden text-sepia hover:text-vermil p-2">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16" />
@@ -74,7 +132,6 @@ const navLinks = [
         </button>
       </div>
 
-      <!-- Mobile nav -->
       <nav id="mobile-nav" class="hidden md:hidden pt-4 pb-2 border-t border-border mt-4">
         {navLinks.map(link => (
           <a
@@ -90,12 +147,10 @@ const navLinks = [
     </div>
   </header>
 
-  <!-- Page content -->
   <main>
     <slot />
   </main>
 
-  <!-- Footer -->
   <footer class="mt-20 border-t border-border bg-paper-dark">
     <div class="max-w-6xl mx-auto px-6 py-12">
       <div class="grid md:grid-cols-3 gap-8">
@@ -140,7 +195,6 @@ const navLinks = [
     </div>
   </footer>
 
-  <!-- Bottom decorative border -->
   <div class="h-1 bg-gradient-to-r from-paper via-vermil to-paper"></div>
 
   <script>

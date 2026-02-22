@@ -45,23 +45,20 @@ const featured = chapters.slice(0, 6);
           </div>
         </div>
 
-        <!-- Book cover placeholder -->
+        <!-- Cover image -->
         <div class="flex justify-center">
-          <div class="img-placeholder w-64 h-80 md:w-72 md:h-96 relative">
+          <div class="relative w-64 md:w-72">
             <!-- Decorative frame -->
-            <div class="absolute inset-3 border border-gold opacity-60"></div>
-            <div class="absolute inset-5 border border-gold opacity-30"></div>
-            <!-- Center content -->
-            <div class="relative z-10 text-center px-6">
-              <div class="font-display text-vermil text-4xl mb-4 leading-none">古</div>
-              <div class="w-px h-16 bg-border mx-auto mb-4"></div>
-              <div class="text-sepia text-xs tracking-[0.4em] leading-loose">
-                房<br/>中<br/>術<br/>圖<br/>像
-              </div>
-              <div class="w-px h-16 bg-border mx-auto mt-4"></div>
-            </div>
-            <div class="absolute bottom-4 left-0 right-0 text-center text-sepia text-xs tracking-widest opacity-60">
-              封面图像（待更新）
+            <div class="absolute -inset-2 border border-gold opacity-40 pointer-events-none z-10"></div>
+            <div class="absolute -inset-4 border border-gold opacity-20 pointer-events-none z-10"></div>
+            <img
+              src="/cover.jpg"
+              alt="宋代仕女图——古典中国女性画像"
+              class="w-full object-cover shadow-lg"
+              style="filter: sepia(20%) contrast(0.95) brightness(0.97);"
+            />
+            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-ink/60 to-transparent px-3 py-2 z-10">
+              <p class="text-paper/80 text-xs tracking-widest text-center">宋代仕女图（公版）</p>
             </div>
           </div>
         </div>
